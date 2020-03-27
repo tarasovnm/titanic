@@ -2,8 +2,8 @@ import numpy as np
 import pandas as pd
 
 # Загружаем данные
-train_data = pd.read_csv("data/train.csv", index_col="PassengerId")
-test_data = pd.read_csv("data/test.csv", index_col="PassengerId")
+train_data = pd.read_csv("../data/input/train.csv", index_col="PassengerId")
+test_data = pd.read_csv("../data/input/test.csv", index_col="PassengerId")
 print(f"Shape of train data: {train_data.shape}. Shape of test data: {test_data.shape}")
 
 # Удаялем лишние столбцы
@@ -50,5 +50,7 @@ for dataset in [train_data, test_data]:
   dataset['AgeBin'] = pd.cut(dataset['Age'].astype(int), 5)
 
 # Сохраняем очищенные данные в файл
-train_data.to_csv('data/cleaned_train_data.csv', header=True)
-test_data.to_csv('data/cleaned_test_data.csv', header=True)
+train_data.to_csv('../data/working/cleaned_train_data.csv', header=True)
+test_data.to_csv('../data/working/cleaned_test_data.csv', header=True)
+
+print('Очищенные данные сохранены в файлы')
