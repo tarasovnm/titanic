@@ -1,39 +1,34 @@
 import numpy as np
 import pandas as pd
+from utils.cleaner import Cleaner
+
+cleaner = Cleaner()
 
 # Загружаем данные
-train_data = pd.read_csv("../data/input/train.csv", index_col="PassengerId")
-test_data = pd.read_csv("../data/input/test.csv", index_col="PassengerId")
-print(f"Shape of train data: {train_data.shape}. Shape of test data: {test_data.shape}")
+cleaner.load_data(index_col="PassengerId")
 
 # Удаялем лишние столбцы
 columns_to_remove = ['Cabin', 'Ticket']
-train_data.drop(columns_to_remove, axis=1, inplace=True)
-test_data.drop(columns_to_remove, axis=1, inplace=True)
+cleaner.remove_columns(columns_to_remove)
 
 # Удаляем выбросы
 
 # Заполняем пропущенные значения
-train_data['Embarked'].fillna("NAN", inplace=True)
-test_data['Embarked'].fillna("NAN", inplace=True) # Можно попробовать использовать вместо NaN моду
+mean_age = cleaner.data['train']['Age'].mean()
+median_age = cleaner.data['train']['Age'].median()
 
-mean_age = train_data['Age'].mean()
-median_age = train_data['Age'].median()
-print(f'Среднее значение возраста: {mean_age}. Медиана: {median_age}')
+mean_fare = cleaner.data['test']['Fare'].mean()
+median_fare = cleaner.data['test']['Fare'].median()
 
-train_data['Age'].fillna(median_age, inplace=True)
-test_data['Age'].fillna(median_age, inplace=True)
+values_dict = {'Embarked': 'NAN',
+              'Age': median_age,
+              'Fare': mean_fare}
 
-mean_fare = test_data['Fare'].mean()
-median_fare = test_data['Fare'].median()
-print(f'Среднее значение затрат: {mean_fare}. Медиана: {median_fare}')
-test_data['Fare'].fillna(mean_fare, inplace=True)
-
-print(f'Пропуски данных в трейн датасете:\n{train_data.isnull().sum()}\n' + "-"*30)
-print(f'Пропуски данных в тестовом датасете:\n{test_data.isnull().sum()}\n' + "-"*30)
+cleaner.fill_na(values_dict)
 
 # Создаем новые характеристики (Feature engineering)
-for dataset in [train_data, test_data]:
+print('Feauture engineering =========================================================')
+for dataset in [cleaner.data['train'], cleaner.data['test']]:
   # размер семьи
   dataset['FamilySize'] = dataset['SibSp'] + dataset['Parch'] + 1
   dataset['IsAlone'] = 1 #initialize to yes/1 is alone
@@ -50,7 +45,4 @@ for dataset in [train_data, test_data]:
   dataset['AgeBin'] = pd.cut(dataset['Age'].astype(int), 5)
 
 # Сохраняем очищенные данные в файл
-train_data.to_csv('../data/working/cleaned_train_data.csv', header=True)
-test_data.to_csv('../data/working/cleaned_test_data.csv', header=True)
-
-print('Очищенные данные сохранены в файлы')
+cleaner.save_to_csv()
