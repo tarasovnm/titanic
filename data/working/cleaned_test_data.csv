@@ -151,7 +151,7 @@ PassengerId,Pclass,Name,Sex,Age,SibSp,Parch,Fare,Embarked,FamilySize,IsAlone,Tit
 1041,2,"Lahtinen, Rev. William",male,30.0,1,1,26.0,S,3,0,Rev,"(14.454, 31.5]","(15.2, 30.4]"
 1042,1,"Earnshaw, Mrs. Boulton (Olive Potter)",female,23.0,0,1,83.1583,C,2,0,Mrs,"(31.5, 512.329]","(15.2, 30.4]"
 1043,3,"Matinoff, Mr. Nicola",male,28.0,0,0,7.8958,C,1,1,Mr,"(-0.001, 7.896]","(15.2, 30.4]"
-1044,3,"Storey, Mr. Thomas",male,60.5,0,0,35.6271884892086,S,1,1,Mr,"(31.5, 512.329]","(45.6, 60.8]"
+1044,3,"Storey, Mr. Thomas",male,60.5,0,0,32.2042079685746,S,1,1,Mr,"(31.5, 512.329]","(45.6, 60.8]"
 1045,3,"Klasen, Mrs. (Hulda Kristina Eugenia Lofqvist)",female,36.0,0,2,12.1833,S,3,0,Mrs,"(7.896, 14.454]","(30.4, 45.6]"
 1046,3,"Asplund, Master. Filip Oscar",male,13.0,4,2,31.3875,S,7,0,Master,"(14.454, 31.5]","(-0.076, 15.2]"
 1047,3,"Duquemin, Mr. Joseph",male,24.0,0,0,7.55,S,1,1,Mr,"(-0.001, 7.896]","(15.2, 30.4]"

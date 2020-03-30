@@ -1,34 +1,37 @@
 import numpy as np
 import pandas as pd
-from utils.cleaner import Cleaner
+from sklearn.pipeline import Pipeline, make_pipeline
 
-cleaner = Cleaner()
+from utils.cleaner import *
+from utils.df_transformers import *
 
-# Загружаем данные
-cleaner.load_data(index_col="PassengerId")
 
-# Удаялем лишние столбцы
+# Загружаем данные ============================================================
+train_data, test_data = load_data(index_col="PassengerId")
+
+# Удаялем лишние столбцы ======================================================
 columns_to_remove = ['Cabin', 'Ticket']
-cleaner.remove_columns(columns_to_remove)
 
 # Удаляем выбросы
 
-# Заполняем пропущенные значения
-mean_age = cleaner.data['train']['Age'].mean()
-median_age = cleaner.data['train']['Age'].median()
+# Заполняем пропущенные значения ==============================================
+print_na_count(train_data, test_data)
 
-mean_fare = cleaner.data['test']['Fare'].mean()
-median_fare = cleaner.data['test']['Fare'].median()
+clean_pipeline = make_pipeline(
+    RemoveColumnsTransformer(['Cabin', 'Ticket']),
+    FillerFunctionTransformer('Embarked', 'value', 'NAN'),
+    FillerFunctionTransformer('Age', 'median'),
+    FillerFunctionTransformer('Fare', 'mean'),
+)
 
-values_dict = {'Embarked': 'NAN',
-              'Age': median_age,
-              'Fare': mean_fare}
+cleaned_train_data = clean_pipeline.fit_transform(train_data)
+cleaned_test_data = clean_pipeline.transform(test_data)
 
-cleaner.fill_na(values_dict)
+print_na_count(cleaned_train_data, cleaned_test_data)
 
 # Создаем новые характеристики (Feature engineering)
 print('Feauture engineering =========================================================')
-for dataset in [cleaner.data['train'], cleaner.data['test']]:
+for dataset in [cleaned_train_data, cleaned_test_data]:
   # размер семьи
   dataset['FamilySize'] = dataset['SibSp'] + dataset['Parch'] + 1
   dataset['IsAlone'] = 1 #initialize to yes/1 is alone
@@ -45,4 +48,4 @@ for dataset in [cleaner.data['train'], cleaner.data['test']]:
   dataset['AgeBin'] = pd.cut(dataset['Age'].astype(int), 5)
 
 # Сохраняем очищенные данные в файл
-cleaner.save_to_csv()
+save_to_csv(cleaned_train_data, cleaned_test_data)

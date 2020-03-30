@@ -377,3 +377,106 @@ class OrderedColumnsTransformer(BaseEstimator, TransformerMixin):
         self  
         """
         return self
+
+class FillerFunctionTransformer(BaseEstimator, TransformerMixin):
+    """ A DataFrame transformer providing imputation or function application 
+        for filling missing values
+    
+    Parameters
+    ----------
+    impute : Boolean, default False
+        
+    func : name of the function as stinrg
+           variants: 'mean', 'median', 'value'
+    
+    """
+    
+    def __init__(self, column, func, value_to_fill=0):
+        self.column = column
+        self.func = func
+        self.value_to_fill = value_to_fill
+
+    def transform(self, X, **transformparams):
+        """ Transforms a DataFrame
+        
+        Parameters
+        ----------
+        X : DataFrame
+            
+        Returns
+        ----------
+        trans : pandas DataFrame
+            Transformation of X 
+        """
+
+        trans = X.copy()
+        trans[self.column].fillna(self.value_to_fill, inplace=True)
+        return trans
+
+    def fit(self, X, y=None, **fitparams):
+        """ Fixes the values to impute or does nothing
+        
+        Parameters
+        ----------
+        X : pandas DataFrame
+        y : not used, API requirement
+                
+        Returns
+        ----------
+        self  
+        """
+        
+        if self.func == 'mean':
+          self.value_to_fill = X[self.column].mean()
+        elif self.func == 'median':
+          self.value_to_fill = X[self.column].median()
+
+        return self
+
+
+class RemoveColumnsTransformer(BaseEstimator, TransformerMixin):
+    """ A DataFrame transformer that provides column removing
+    
+    Allows to remove columns by name from pandas dataframes in scikit-learn
+    pipelines.
+    
+    Parameters
+    ----------
+    columns : list of str, names of the dataframe columns to remove
+        Default: [] 
+    
+    """
+    def __init__(self, columns=[]):
+        self.columns = columns
+
+    def transform(self, X, **transform_params):
+        """ Removers columns of a DataFrame
+        
+        Parameters
+        ----------
+        X : pandas DataFrame
+            
+        Returns
+        ----------
+        
+        trans : pandas DataFrame
+            contains selected columns of X      
+        """
+        trans = X.copy() 
+        trans.drop(self.columns, axis=1, inplace=True)
+        return trans
+    
+    def fit(self, X, y=None, **fit_params):
+        """ Do nothing function
+        
+        Parameters
+        ----------
+        X : pandas DataFrame
+        y : default None
+                
+        
+        Returns
+        ----------
+        self  
+        """
+        return self
