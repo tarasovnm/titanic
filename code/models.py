@@ -30,12 +30,12 @@ print(train_data.columns)
 
 # Разделяем выборку на трейн и тест =====================================================
 working_cols = ['Age', 'SibSp', 'Parch', 'Fare', 'FamilySize', 'Pclass_2', 'Pclass_3',
-       'Pclass_nan', 'Sex_male', 'Sex_nan', 'Embarked_NAN', 'Embarked_Q',
-       'Embarked_S', 'Embarked_nan', 'IsAlone_1', 'IsAlone_nan', 'Title_Col',
+       'Sex_male', 'Embarked_NAN', 'Embarked_Q',
+       'Embarked_S', 'IsAlone_1', 'Title_Col',
        'Title_Don', 'Title_Dona', 'Title_Dr', 'Title_Jonkheer', 'Title_Lady',
        'Title_Major', 'Title_Master', 'Title_Miss', 'Title_Mlle', 'Title_Mme',
        'Title_Mr', 'Title_Mrs', 'Title_Ms', 'Title_Rev', 'Title_Sir',
-       'Title_the Countess', 'Title_nan']
+       'Title_the Countess']
 X = train_data[working_cols]
 y = train_data['Survived']
 
@@ -132,11 +132,11 @@ gbc = Pipeline([("Scaler", StandardScaler()),
                        ("GradientBoosting", GradientBoostingClassifier(n_estimators=100))])
 gbc.fit(X_train, y_train)
 predictions = gbc.predict(X_test)
-print(metrics.accuracy_score(y_test, predictions))
+print(f'Значение accuracy для GradientBoostingClassifier: {metrics.accuracy_score(y_test, predictions)}')
 
 # Создаем сабмишн =======================================================================
 gbc.fit(train_data.drop(['Survived'], axis=1), y)
 predicted = gbc.predict(test_data)
 test_data["Survived"] = predicted
-test_data["Survived"].to_csv('../submissions/gbc.csv', header=True)
+test_data["Survived"].to_csv('../submissions/gbc_02_04_2020v7.csv', header=True)
 print('Сабмишн успешно записан на диск')

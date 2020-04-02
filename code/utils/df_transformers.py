@@ -174,7 +174,7 @@ class ToDummiesTransformer(BaseEstimator, TransformerMixin):
         
         """
     
-        trans = pd.get_dummies(X, drop_first=True, dummy_na=True, sparse=True,).copy()
+        trans = pd.get_dummies(X).copy()
         return trans
 
     def fit(self, X, y=None, **fitparams):
