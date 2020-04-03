@@ -1,12 +1,8 @@
 import numpy as np
 import pandas as pd
 
-from matplotlib import pyplot as plt
-import seaborn as sns
-
 from sklearn import pipeline, preprocessing, ensemble, linear_model, svm, tree
 from sklearn.pipeline import Pipeline, make_pipeline
-from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split, StratifiedKFold, cross_val_score, KFold, ShuffleSplit, cross_validate
 from sklearn import model_selection, metrics
 
@@ -18,7 +14,7 @@ from sklearn.neighbors import KNeighborsClassifier
 from xgboost import XGBClassifier
 from sklearn.tree import DecisionTreeClassifier
 
-from utils.df_transformers import SelectColumnsTransformer
+# from utils.df_transformers import SelectColumnsTransformer
 
 
 # Загружаем данные ======================================================================
@@ -26,17 +22,7 @@ train_data = pd.read_csv("../data/output/preprocessed_train_data.csv", index_col
 test_data = pd.read_csv("../data/output/preprocessed_test_data.csv", index_col="PassengerId")
 print(f"Shape of train data: {train_data.shape}. Shape of test data: {test_data.shape}")
 
-print(train_data.columns)
-
-# Разделяем выборку на трейн и тест =====================================================
-working_cols = ['Age', 'SibSp', 'Parch', 'Fare', 'FamilySize', 'Pclass_2', 'Pclass_3',
-       'Sex_male', 'Embarked_NAN', 'Embarked_Q',
-       'Embarked_S', 'IsAlone_1', 'Title_Col',
-       'Title_Don', 'Title_Dona', 'Title_Dr', 'Title_Jonkheer', 'Title_Lady',
-       'Title_Major', 'Title_Master', 'Title_Miss', 'Title_Mlle', 'Title_Mme',
-       'Title_Mr', 'Title_Mrs', 'Title_Ms', 'Title_Rev', 'Title_Sir',
-       'Title_the Countess']
-X = train_data[working_cols]
+X = np.array(train_data.drop(['Survived'], axis=1))
 y = train_data['Survived']
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=0)
@@ -128,8 +114,7 @@ MLA_compare.sort_values(by = ['MLA Test Accuracy Mean'], ascending = False, inpl
 print(MLA_compare)
 
 # Лучшее значение дает GradientBoostingClassifier =======================================
-gbc = Pipeline([("Scaler", StandardScaler()),
-                       ("GradientBoosting", GradientBoostingClassifier(n_estimators=100))])
+gbc = GradientBoostingClassifier()
 gbc.fit(X_train, y_train)
 predictions = gbc.predict(X_test)
 print(f'Значение accuracy для GradientBoostingClassifier: {metrics.accuracy_score(y_test, predictions)}')
@@ -138,5 +123,5 @@ print(f'Значение accuracy для GradientBoostingClassifier: {metrics.ac
 gbc.fit(train_data.drop(['Survived'], axis=1), y)
 predicted = gbc.predict(test_data)
 test_data["Survived"] = predicted
-test_data["Survived"].to_csv('../submissions/gbc_02_04_2020v7.csv', header=True)
+test_data["Survived"].to_csv('../submissions/gbc_03_04_2020v1.csv', header=True)
 print('Сабмишн успешно записан на диск')
