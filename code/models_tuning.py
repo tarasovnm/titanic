@@ -45,7 +45,7 @@ print(f'Значение accuracy для GradientBoostingClassifier на тес�
 # parameters_grid = {
 #   'loss': ['deviance', 'exponential'],
 #   'learning_rate': np.linspace(0.01, 0.2, 10, endpoint=True),
-#   'n_estimators': [100, 150, 200, 250],
+#   'n_estimators': [70, 75, 80, 85, 90, 100, 150],
 #   'max_depth': [1, 2, 3, 4, 5],
 #   'min_samples_split': np.linspace(0.1, 1.0, 10, endpoint=True),
 #   'min_samples_leaf': np.linspace(0.1, 0.5, 5, endpoint=True),
@@ -53,7 +53,7 @@ print(f'Значение accuracy для GradientBoostingClassifier на тес�
 # }
 
 # cv = KFold(n_splits=n_folds, random_state=seed)
-# grid_cv = model_selection.RandomizedSearchCV(gbc, parameters_grid, scoring='accuracy', cv=cv, n_iter=1000)
+# grid_cv = model_selection.RandomizedSearchCV(gbc, parameters_grid, scoring='roc_auc', cv=cv, n_iter=30000)
 # grid_cv.fit(X_train, y_train)
 
 # print(grid_cv.best_estimator_)
@@ -61,14 +61,13 @@ print(f'Значение accuracy для GradientBoostingClassifier на тес�
 # print(grid_cv.best_params_)
 
 # Best parameters
-# {'n_estimators': 200, 'min_samples_split': 0.1, 'min_samples_leaf': 0.1, 'max_features': 16, 'max_depth': 4, 'loss': 'deviance', 'learning_rate': 0.1366666666666667}
-
 gbc_best = GradientBoostingClassifier(criterion='friedman_mse', init=None,
-                           learning_rate=0.1366666666666667, loss='deviance',
-                           max_depth=4, max_features=16, max_leaf_nodes=None,
+                           learning_rate=0.2, loss='deviance', max_depth=4,
+                           max_features=50, max_leaf_nodes=None,
                            min_impurity_decrease=0.0, min_impurity_split=None,
-                           min_samples_leaf=0.1, min_samples_split=0.1,
-                           min_weight_fraction_leaf=0.0, n_estimators=200,
+                           min_samples_leaf=0.1,
+                           min_samples_split=0.30000000000000004,
+                           min_weight_fraction_leaf=0.0, n_estimators=150,
                            n_iter_no_change=None, presort='auto',
                            random_state=None, subsample=1.0, tol=0.0001,
                            validation_fraction=0.1, verbose=0,
@@ -82,5 +81,5 @@ print(f'Значение accuracy для GradientBoostingClassifier на тес�
 gbc_best.fit(X, y)
 predicted = gbc_best.predict(test_data)
 test_data["Survived"] = predicted
-test_data["Survived"].to_csv('../submissions/gbc_03_04_2020v2.csv', header=True)
+test_data["Survived"].to_csv('../submissions/gbc_06_04_2020v4.csv', header=True)
 print('Сабмишн успешно записан на диск')
